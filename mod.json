@@ -1,0 +1,16 @@
+{
+	"namespace": "DebugMenu",
+	"displayName": "Debug Menu",
+	"version": "0.0.1",
+	"synchronyVersion": "3.2.1",
+	"description": "No description given.",
+	"author": "Nixill",
+	"dependencies": {},
+	"api": {
+		"scriptPath": "scripts"
+	},
+	"icon": "DebugKeysIcon.png",
+	"banner": "DebugKeysBanner.png",
+	"tags": [],
+	"name": "DebugMenu"
+}

@@ -10,6 +10,9 @@ return {
     EntityDoesntExist = {
       Title = L("Error", "menu.entityDoesntExist.title")
     },
+    EntityList = {
+      Title = L("Entity list", "menu.entityList.title")
+    },
     EntityPicker = {
       Label = {
         Default = function(...) return L.formatKey("%s#%d", "menu.entityPicker.label.default", ...) end,
@@ -23,8 +26,9 @@ return {
           return L.formatKey("%s#%d at %d, %d", "menu.entityPicker.label.withPosition", ...)
         end
       },
-      Select = function(...) return L.formatKey("Entity ID: %d", "menu.entityPicker.select", ...) end,
+      Nearby = L("Nearby entities", "menu.entityPicker.nearby"),
       PrintEntity = L("Print entity", "menu.entityPicker.print"),
+      Select = function(...) return L.formatKey("Entity ID: %d", "menu.entityPicker.select", ...) end,
       Title = L("Entity picker", "menu.entityPicker.title"),
       ViewEntity = L("View entity", "menu.entityPicker.view"),
     },

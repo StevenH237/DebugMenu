@@ -1,4 +1,5 @@
 local Entities = require "system.game.Entities"
+local Map      = require "necro.game.object.Map"
 local Text     = require "DebugMenu.i18n.Text"
 
 return {
@@ -13,5 +14,27 @@ return {
     else
       return Text.Menu.EntityPicker.Label.Default(ent.name, ent.id)
     end
+  end,
+
+  getNearbyEntities = function(ourX, ourY, r)
+    local r2 = r * r
+    local fr = math.floor(r)
+
+    local out = {}
+
+    for dx = -fr, fr do
+      local sr = math.sqrt(r2 - dx * dx)
+      local fsr = math.floor(sr)
+      local x = ourX + dx
+      for dy = -fsr, fsr do
+        local y = ourY + dy
+        local ents = Map.getAll(x, y)
+        for i, v in ipairs(ents) do
+          out[#out + 1] = v
+        end
+      end
+    end
+
+    return out
   end
 }

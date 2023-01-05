@@ -4,14 +4,14 @@ local StateControl = require "necro.client.StateControl"
 
 local Text = require "DebugMenu.i18n.Text"
 
-local function getExitFunction(wasPaused)
-  return function()
-    Menu.close()
-    if (not wasPaused) and StateControl.isPauseAllowed() then
-      StateControl.unpause()
-    end
-  end
-end
+-- local function getExitFunction(wasPaused)
+--   return function()
+--     Menu.close()
+--     if (not wasPaused) and StateControl.isPauseAllowed() then
+--       StateControl.unpause()
+--     end
+--   end
+-- end
 
 local menuData = {
 }
@@ -38,12 +38,13 @@ Event.menu.add("menuDebug", "DebugMenu_debugMenu", function(ev)
     {
       id = "_done",
       label = Text.Menu.Close,
-      action = getExitFunction(ev.arg.wasPaused)
+      -- action = getExitFunction(ev.arg.wasPaused)
+      action = Menu.close
     }
   }
 
   menu.entries = entries
   menu.label = Text.Menu.Debug.Title
-  menu.escapeAction = getExitFunction(ev.arg.wasPaused)
+  -- menu.escapeAction = getExitFunction(ev.arg.wasPaused)
   ev.menu = menu
 end)

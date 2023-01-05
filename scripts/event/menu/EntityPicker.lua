@@ -4,7 +4,8 @@ local Menu       = require "necro.menu.Menu"
 local Player     = require "necro.game.character.Player"
 local PlayerList = require "necro.client.PlayerList"
 
-local DMMisc = require "DebugMenu.Misc"
+local DMMisc     = require "DebugMenu.Misc"
+local DMSettings = require "DebugMenu.Settings"
 
 local Text = require "DebugMenu.i18n.Text"
 
@@ -41,6 +42,9 @@ local function selectEntity(inp, arg)
 
   -- Get the label
   arg.entityLabel = DMMisc.labelEntity(ent, id)
+
+  -- Refresh the menu
+  Menu.update()
 end
 
 local function selectLowerEntity(arg)
@@ -99,7 +103,14 @@ Event.menu.add("menuPickEntity", "DebugMenu_entityPicker", function(ev)
       end,
       leftAction = function() selectLowerEntity(ev.arg) end,
       rightAction = function() selectHigherEntity(ev.arg) end,
-      action = function() end,
+      action = function()
+        Menu.open("DebugMenu_entityList", {
+          callback = function(pick)
+            Menu.close()
+            selectEntity(pick, ev.arg)
+          end --, entities = nil
+        })
+      end,
       specialAction = function()
         selectEntity(Player.getPlayerEntity(PlayerList.getLocalPlayerID()) or getHighestEntity, ev.arg)
       end
@@ -113,19 +124,37 @@ Event.menu.add("menuPickEntity", "DebugMenu_entityPicker", function(ev)
   }
 
   if ev.arg.entity then
+    local ent = ev.arg.entity
+
     entries[3] = {
       id = "viewEntity",
       label = Text.Menu.EntityPicker.ViewEntity,
       action = function()
         Menu.open("DebugMenu_entityViewer", {
-          entity = ev.arg.entity,
+          entity = ent,
           label = ev.arg.entityLabel
         })
       end,
       specialAction = function()
-        print(ev.arg.entity)
+        print(ent)
       end
     }
+
+    if ent.gameObject and ent.gameObject.tangible then
+      entries[4] = {
+        id = "nearbyEntity",
+        label = Text.Menu.EntityPicker.Nearby,
+        action = function()
+          Menu.open("DebugMenu_entityList", {
+            callback = function(pick)
+              Menu.close()
+              selectEntity(pick, ev.arg)
+            end,
+            entities = DMMisc.getNearbyEntities(ent.position.x, ent.position.y, DMSettings.get("nearbyRadius"))
+          })
+        end
+      }
+    end
   end
 
   entries[#entries + 1] = {

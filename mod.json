@@ -5,7 +5,9 @@
 	"synchronyVersion": "3.2.1",
 	"description": "No description given.",
 	"author": "Nixill",
-	"dependencies": {},
+	"dependencies": {
+		"MenuMod_io_2667555": true
+	},
 	"api": {
 		"scriptPath": "scripts"
 	},

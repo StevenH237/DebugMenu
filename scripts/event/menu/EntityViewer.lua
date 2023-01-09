@@ -6,6 +6,8 @@ local Utilities = require "system.utils.Utilities"
 
 local DMMisc = require "DebugMenu.Misc"
 
+local NixLib = require "NixLib.NixLib"
+
 local Text = require "DebugMenu.i18n.Text"
 
 local function selectComponent(i, arg)
@@ -62,6 +64,8 @@ Event.menu.add("menuEntityViewer", "DebugMenu_entityViewer", function(ev)
     componentSelected = 0,
     entity = { -- Entity#237 },
     label = "Entity#237 at 0, 0",
+    selected = nil or "",
+    controls = nil or ""
   }
   ]]
 
@@ -101,21 +105,29 @@ Event.menu.add("menuEntityViewer", "DebugMenu_entityViewer", function(ev)
     }
   }
 
-  -- Now add each of the component's fields to the menu
-  if not pcall(function() for k, dv in Utilities.sortedPairs(ev.arg.componentData._defaults) do
+  local componentSpec = NixLib.getComponent(ev.arg.componentName)
+
+  if #componentSpec.fields == 0 then
+    entries[#entries + 1] = {
+      id = "marker",
+      label = "(Marker component - no fields)"
+      -- action intentionally omitted to grey out the item
+    }
+  else
+    local fieldTypes = {}
+    for i, v in ipairs(componentSpec.fields) do
+      fieldTypes[v.name] = v.type
+    end
+
+    -- Now add each of the component's fields to the menu
+    for k, dv in Utilities.sortedPairs(ev.arg.componentData._defaults) do
       local v = ev.arg.componentData[k]
 
       local entry = {
         id = "field_" .. k
       }
 
-      if type(v) ~= "table" then
-        entry.label = string.format("%s: %s", k, Utilities.inspect(v))
-        entry.action = function() end
-        if type(v) == "number" and v == math.floor(v) and v > 0 then
-          entry.specialAction = function() openAsEntity(v) end
-        end
-      else
+      if fieldTypes[k] == "table" then
         local any = false
         for k2, v2 in Utilities.sortedPairs(v) do
           any = true
@@ -130,21 +142,34 @@ Event.menu.add("menuEntityViewer", "DebugMenu_entityViewer", function(ev)
               prefix = ev.arg.componentName .. "." .. k
             })
           end
+          entry.actionHint = "View this table"
           entry.specialAction = function() print(v) end
+          entry.specialActionHint = "Print table to log"
         else
           entry.label = string.format("%s: {}", k)
           entry.action = function() end
         end
+      elseif fieldTypes[k] == "entityID" then
+        if v == 0 then
+          entry.label = string.format("%s: (None)", k)
+          entry.action = function() end
+        else
+          entry.label = string.format("%s: %s", k, DMMisc.labelEntity(Entities.getEntityByID(v), v))
+          entry.action = function() openAsEntity(v) end
+          entry.actionHint = "View this entity"
+        end
+      elseif fieldTypes[k] == "string" then
+        entry.label = string.format("%s: %s", k, Utilities.inspect(v))
+        entry.action = function() end
+        entry.specialAction = function() print(v) end
+        entry.specialActionHint = "Print string to log"
+      else
+        entry.label = string.format("%s: %s", k, Utilities.inspect(v))
+        entry.action = function() end
       end
 
       entries[#entries + 1] = entry
     end
-  end) then
-    entries[#entries + 1] = {
-      id = "marker",
-      label = "(Marker component - no fields)"
-      -- action intentionally omitted to grey out the item
-    }
   end
 
   -- And the gap and done buttons
@@ -162,4 +187,6 @@ Event.menu.add("menuEntityViewer", "DebugMenu_entityViewer", function(ev)
   menu.label = Text.Menu.EntityViewer.Title
   menu.escapeAction = Menu.close
   ev.menu = menu
+
+  DMMisc.addControlHint(ev)
 end)

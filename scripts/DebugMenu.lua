@@ -12,3 +12,11 @@ MenuMod.register {
   subsequence = 1,
   menuArg = {}
 }
+
+-- MenuMod.register {
+--   name = Text.Menu.Debug.Title,
+--   menu = "DebugMenu_debugMenu",
+--   id = "DebugMenu",
+--   subsequence = 0,
+--   menuArg = {}
+-- }

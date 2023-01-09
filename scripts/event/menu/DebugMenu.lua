@@ -4,33 +4,25 @@ local StateControl = require "necro.client.StateControl"
 
 local Text = require "DebugMenu.i18n.Text"
 
--- local function getExitFunction(wasPaused)
---   return function()
---     Menu.close()
---     if (not wasPaused) and StateControl.isPauseAllowed() then
---       StateControl.unpause()
---     end
---   end
--- end
+-- This menu is normally inaccessible! I'm just tossing it back in when I need something quick.
 
 local menuData = {
 }
 
 Event.menu.add("menuDebug", "DebugMenu_debugMenu", function(ev)
   --[[ev.arg format:
-  {
-    wasPaused = true
-  }
+  {}
   ]]
 
   local menu = {}
   local entries = {
     {
-      id = "templateItem",
-      label = Text.Menu.EntityPicker.Title,
+      id = "blah",
+      label = "Print this selection",
       action = function()
-        Menu.open("DebugMenu_entityPicker", {})
+        print(Menu.getSelectedEntry())
       end,
+      controlHint = "{a} Print"
     },
     {
       height = 0
@@ -38,13 +30,11 @@ Event.menu.add("menuDebug", "DebugMenu_debugMenu", function(ev)
     {
       id = "_done",
       label = Text.Menu.Close,
-      -- action = getExitFunction(ev.arg.wasPaused)
       action = Menu.close
     }
   }
 
   menu.entries = entries
   menu.label = Text.Menu.Debug.Title
-  -- menu.escapeAction = getExitFunction(ev.arg.wasPaused)
   ev.menu = menu
 end)

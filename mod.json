@@ -6,7 +6,8 @@
 	"description": "No description given.",
 	"author": "Nixill",
 	"dependencies": {
-		"MenuMod_io_2667555": true
+		"MenuMod_io_2667555": true,
+		"NixLib_io_2237103": true
 	},
 	"api": {
 		"scriptPath": "scripts"

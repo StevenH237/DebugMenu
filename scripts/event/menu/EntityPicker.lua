@@ -79,7 +79,9 @@ Event.menu.add("menuPickEntity", "DebugMenu_entityPicker", function(ev)
   {
     entity = {},
     entityID = 0,
-    entityLabel = ""
+    entityLabel = "",
+    selected = nil or "",
+    controls = nil or ""
   }
   ]]
 
@@ -103,6 +105,7 @@ Event.menu.add("menuPickEntity", "DebugMenu_entityPicker", function(ev)
       end,
       leftAction = function() selectLowerEntity(ev.arg) end,
       rightAction = function() selectHigherEntity(ev.arg) end,
+      sideActionHint = "Select another entity",
       action = function()
         Menu.open("DebugMenu_entityList", {
           callback = function(pick)
@@ -111,9 +114,11 @@ Event.menu.add("menuPickEntity", "DebugMenu_entityPicker", function(ev)
           end --, entities = nil
         })
       end,
+      actionHint = "Open entity list",
       specialAction = function()
-        selectEntity(Player.getPlayerEntity(PlayerList.getLocalPlayerID()) or getHighestEntity, ev.arg)
-      end
+        selectEntity(Player.getPlayerEntity(PlayerList.getLocalPlayerID()) or getHighestEntity(), ev.arg)
+      end,
+      specialActionHint = "Select local player"
     },
     {
       id = "entityLabel",
@@ -135,9 +140,11 @@ Event.menu.add("menuPickEntity", "DebugMenu_entityPicker", function(ev)
           label = ev.arg.entityLabel
         })
       end,
+      actionHint = "Open entity viewer",
       specialAction = function()
         print(ent)
-      end
+      end,
+      specialActionHint = "Print to log"
     }
 
     if ent.gameObject and ent.gameObject.tangible then
@@ -152,7 +159,8 @@ Event.menu.add("menuPickEntity", "DebugMenu_entityPicker", function(ev)
             end,
             entities = DMMisc.getNearbyEntities(ent.position.x, ent.position.y, DMSettings.get("nearbyRadius"))
           })
-        end
+        end,
+        actionHint = "Search nearby entities"
       }
     end
   end
@@ -171,4 +179,6 @@ Event.menu.add("menuPickEntity", "DebugMenu_entityPicker", function(ev)
   menu.label = Text.Menu.EntityPicker.Title
   menu.escapeAction = Menu.close
   ev.menu = menu
+
+  DMMisc.addControlHint(ev)
 end)

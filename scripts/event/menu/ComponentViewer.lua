@@ -70,34 +70,29 @@ local function openAsEntity(id)
   end
 end
 
-Event.menu.add("menuEntityViewer", "DebugMenu_entityViewer", function(ev)
+Event.menu.add("menuComponentViewer", "DebugMenu_componentViewer", function(ev)
   --[[ev.arg format:
   {
-    componentData = {},
-    componentList = {},
-    componentName = "",
-    componentSelected = 0,
-    entity = { -- Entity#237 },
-    label = "Entity#237 at 0, 0",
+    fieldData = {},
+    fieldList = {},
+    fieldName = "",
+    fieldSelected = 0,
+    component = { -- component data },
     selected = nil or "",
     controls = nil or ""
   }
   ]]
 
   -- Did the entity change? We'll need to regen the component lists if so.
-  if ev.arg.componentList == nil then
+  if ev.arg.fieldList == nil then
     local ent = ev.arg.entity
 
-    ev.arg.componentData = {}
-    ev.arg.componentList = {}
-    ev.arg.componentName = ""
-    ev.arg.componentSelected = 0
+    ev.arg.fieldData = {}
+    ev.arg.fieldList = {}
+    ev.arg.fieldName = ""
+    ev.arg.fieldSelected = 0
 
-    ev.arg.componentList = Utilities.map(Entities.listComponentNames(), function(n)
-      if Entities.typeHasComponent(ent.name, n) then
-        return n
-      end
-    end)
+    ev.arg.fieldList = Utilities.map()
 
     selectComponent(1, ev.arg)
   end

@@ -9,3 +9,19 @@ MenuMod.register {
   subsequence = 1,
   menuArg = {}
 }
+
+MenuMod.register {
+  name = Text.Menu.EntityPrototypeList.Title,
+  menu = "DebugMenu_entityPrototypeList",
+  id = "entityPrototypeList",
+  subsequence = 2,
+  menuArg = {}
+}
+
+MenuMod.register {
+  name = Text.Menu.ComponentList.Title,
+  menu = "DebugMenu_componentList",
+  id = "componentList",
+  subsequence = 3,
+  menuArg = {}
+}

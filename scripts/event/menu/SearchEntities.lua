@@ -30,7 +30,7 @@ local function searchEntities(params)
   })
 end
 
-Event.menu.add("menuTemplate", "DebugMenu_searchEntities", function(ev)
+Event.menu.add("menuSearchEntities", "DebugMenu_searchEntities", function(ev)
   if not ev.arg then
     -- ev.arg format:
     ev.arg = {

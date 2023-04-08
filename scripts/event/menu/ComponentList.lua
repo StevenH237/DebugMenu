@@ -15,7 +15,7 @@ local Text = require "DebugMenu.i18n.Text"
 Event.menu.add("menuComponentList", "DebugMenu_componentList", function(ev)
   --[[ev.arg format:
   {
-    components = nil or {} -- list of names
+    componentIDs = nil or {} -- list of names
   }
   ]]
 
@@ -23,45 +23,50 @@ Event.menu.add("menuComponentList", "DebugMenu_componentList", function(ev)
   local entries = {}
   local components = {}
 
-  local search = ev.searchText or ""
-
-  entries[#entries + 1] = {
+  entries[1] = {
     id = "_controlHint",
     label = string.format("%s: View component (if non-marker) | %s: Print component to log",
       Controls.getFriendlyMiscKeyBind(Controls.Misc.SELECT), Controls.getFriendlyMiscKeyBind(Controls.Misc.SELECT_2)),
-    font = UI.Font.SMALL
+    font = UI.Font.SMALL,
+    searchImmunity = true
   }
 
   if ev.arg.components then
-    components = Utilities.map(ev.arg.components, NixLib.getComponent)
+    components = ev.arg.components
   else
-    for k, v in Utilities.sortedPairs(NixLib.getComponents()) do
-      components[#components + 1] = v
+    if ev.arg.componentIDs then
+      components = Utilities.map(ev.arg.componentIDs, NixLib.getComponent)
+    else
+      ev.arg.componentIDs = {}
+      for k, v in Utilities.sortedPairs(NixLib.getComponents()) do
+        table.insert(ev.arg.componentIDs, k)
+        components[#components + 1] = v
+      end
     end
+
+    ev.arg.components = components
   end
 
   for i, v in ipairs(components) do
     local name = v.name
 
-    if name:lower():find(search:lower(), 1, true) then
-      local entry = {
-        id = "component_" .. name,
-        label = name
-      }
+    local entry = {
+      id = "component_" .. name,
+      label = name
+    }
 
-      if v.fields[1] then
-        entry.action = function()
-          Menu.open("DebugMenu_componentViewer", {
-            component = v
-          })
-        end
-        entry.specialAction = function()
-          log.info(v)
-        end
+    if v.fields[1] then
+      entry.action = function()
+        Menu.open("DebugMenu_componentViewer", {
+          component = v
+        })
       end
-
-      entries[#entries + 1] = entry
+      entry.specialAction = function()
+        log.info(Utilities.inspect(v))
+      end
     end
+
+    entries[#entries + 1] = entry
   end
 
   entries[#entries + 1] = {

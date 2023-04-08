@@ -16,6 +16,16 @@ return {
     ComponentList = {
       Title = L("Component definitions", "menu.componentList.title")
     },
+    ComponentViewer = {
+      Default = function(...) return L.formatKey("Default: %s", "menu.componentViewer.default", ...) end,
+      Mutability = function(...) return L.formatKey("Mutable: %s", "menu.componentViewer.mutability", ...) end,
+      ShowEnum = L("Show enum values", "menu.componentViewer.showEnum"),
+      Title = L("Component viewer", "menu.componentViewer.title"),
+      Type = function(...) return L.formatKey("Type: %s", "menu.componentViewer.type", ...) end,
+      Types = {
+        Enum = L("int (enum)", "menu.componentViewer.types.enum") -- Shouldn't be changed except to reverse order for RTL languages
+      }
+    },
     EntityComponentList = {
       Title = L("Components", "menu.entityComponentList.title")
     },

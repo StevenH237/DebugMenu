@@ -77,6 +77,7 @@ Event.menu.add("menuEntityViewer", "DebugMenu_entityViewer", function(ev)
     componentList = {},
     componentName = "",
     componentSelected = 0,
+    componentSpec = {},
     entity = { -- Entity#237 },
     label = "Entity#237 at 0, 0",
     selected = nil or "",
@@ -130,7 +131,13 @@ Event.menu.add("menuEntityViewer", "DebugMenu_entityViewer", function(ev)
     }
   }
 
-  local componentSpec = NixLib.getComponent(ev.arg.componentName)
+  local componentSpec
+
+  if not ev.arg.componentSpec or ev.arg.componentSpec.name ~= ev.arg.componentName then
+    ev.arg.componentSpec = NixLib.getComponent(ev.arg.componentName)
+  end
+
+  componentSpec = ev.arg.componentSpec
 
   if #componentSpec.fields == 0 then
     entries[#entries + 1] = {
@@ -142,8 +149,13 @@ Event.menu.add("menuEntityViewer", "DebugMenu_entityViewer", function(ev)
     local fieldTypes = {}
     local enums = {}
     for i, v in ipairs(componentSpec.fields) do
+      print("Field name: " .. v.name)
+      print("Field type: " .. v.type)
       fieldTypes[v.name] = v.type
-      enums[v.name] = v.enum
+      if v.enum then
+        print("Field enum: Present")
+        enums[v.name] = v.enum
+      end
     end
 
     -- Now add each of the component's fields to the menu
@@ -172,7 +184,7 @@ Event.menu.add("menuEntityViewer", "DebugMenu_entityViewer", function(ev)
             })
           end
           entry.actionHint = "View this table"
-          entry.specialAction = function() log.info(v) end
+          entry.specialAction = function() log.info(Utilities.inspect(v)) end
           entry.specialActionHint = "Print table to log"
         else
           entry.label = string.format("%s: {}", k)
@@ -190,7 +202,7 @@ Event.menu.add("menuEntityViewer", "DebugMenu_entityViewer", function(ev)
       elseif fieldTypes[k] == "string" then
         entry.label = string.format("%s: %s", k, Utilities.inspect(v))
         entry.action = function() end
-        entry.specialAction = function() log.info(v) end
+        entry.specialAction = function() log.info(Utilities.inspect(v)) end
         entry.specialActionHint = "Print string to log"
       elseif enums[k] then
         local enum = enums[k]

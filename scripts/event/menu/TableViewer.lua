@@ -89,6 +89,9 @@ Event.menu.add("menuTable", "DebugMenu_tableViewer", function(ev)
             entry.specialActionHint = "View as entity"
           end
         end
+      else
+        entry.label = string.format("%s: %s", k, Utilities.inspect(v))
+        entry.action = function() end
       end
     else
       local any = false

@@ -92,7 +92,7 @@ Event.menu.add("menuEntityPrototypeList", "DebugMenu_entityPrototypeList", funct
         id = "entity_" .. v.id,
         label = label,
         action = function() openComponentList(v, label) end,
-        specialAction = function() log.info(v) end
+        specialAction = function() log.info(Utilities.inspect(v)) end
       }
     end
   end
